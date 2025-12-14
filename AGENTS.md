@@ -281,12 +281,73 @@ type Message =
 - [x] Response header modification in interceptor
 - [x] Header editor UI component
 
-### Phase 6: Polish & Release
+### Phase 6: UI Polish & DevTools Integration
 
-- [ ] Error handling
-- [ ] Edge cases (iframes, web workers?)
-- [ ] Chrome Web Store assets (icons, screenshots, description)
-- [ ] README documentation
+- [ ] **Rename to DevProxy** - Update all references from `devProxy` to `DevProxy` (branding consistency)
+- [ ] **Chrome DevTools-style UI** - Make the panel look native to Chrome DevTools:
+  - Match DevTools color scheme (dark theme, #242424 background, etc.)
+  - Use DevTools-style tabs, buttons, and inputs
+  - Match typography and spacing
+- [ ] **Install shadcn/ui** - Use shadcn components for consistent, professional UI:
+  - Buttons, inputs, selects, switches
+  - Dialog/modal for rule editor
+  - Tabs component
+  - Data table for rules and logs
+- [ ] **Extension icons** - Create proper icon set:
+  - 16x16, 32x32, 48x48, 128x128 PNG icons
+  - Consider a proxy/network-themed icon (arrows, network nodes, shield)
+
+### Phase 7: Logging & Observability
+
+- [ ] **Remove console.log statements** - Clean up all debug logging from:
+  - `interceptor.ts`
+  - `content-script.ts`
+  - `service-worker.ts`
+- [ ] **In-panel Activity Log** - Add a dedicated log view in the DevProxy panel:
+  - Timestamp, URL, matched rule, action taken
+  - Filter by rule, status code, time range
+  - Clear log button
+  - Expandable rows for full request details
+  - Color-coded by action type (blocked, delayed, modified)
+- [ ] **Request counter badge** - Show count of intercepted requests in panel header
+
+### Phase 8: UX Improvements
+
+- [ ] **Drag-and-drop rule reordering** - Rules are matched in order, let users prioritize
+- [ ] **Rule search/filter** - Quick filter when you have many rules
+- [ ] **Keyboard shortcuts**:
+  - `Cmd+N` / `Ctrl+N` - New rule
+  - `Cmd+E` / `Ctrl+E` - Toggle extension
+  - `Escape` - Close editor modal
+- [ ] **Rule duplication** - Quick duplicate an existing rule
+- [ ] **Bulk operations** - Select multiple rules to enable/disable/delete
+- [ ] **Rule templates** - Pre-built rules for common scenarios:
+  - "Simulate offline"
+  - "Slow network (3G)"
+  - "API rate limiting (429)"
+  - "Server error (500)"
+
+### Phase 9: Advanced Features
+
+- [ ] **Import/Export rules** - JSON export for sharing configurations
+- [ ] **Rule groups/folders** - Organize rules by project or domain
+- [ ] **Conditional rules** - Only apply rule if header matches, method is POST, etc.
+- [ ] **Request method filtering** - Target only GET, POST, PUT, etc.
+- [ ] **Response body modification** - Override response content (complex, may need different approach)
+- [ ] **Per-domain quick toggle** - Sidebar showing domains with active rules
+
+### Phase 10: Polish & Chrome Web Store Release
+
+- [ ] **Error handling** - Graceful failures throughout
+- [ ] **Edge cases** - iframes, web workers, service workers
+- [ ] **README documentation** - Usage instructions, screenshots
+- [ ] **Store listing assets**:
+  - Promotional images (440x280, 920x680, 1400x560)
+  - Screenshots (1280x800)
+  - Detailed description with features
+- [ ] **Privacy policy** - Required for Web Store
+- [ ] **Landing page** - Simple site explaining the extension
+- [ ] **Analytics** - Optional anonymous usage tracking (with consent)
 
 ---
 
@@ -355,75 +416,6 @@ When working with an AI assistant on this project:
 - [Vite Chrome Extension Plugin](https://github.com/niceplugin/crx)
 - [React DevTools Extension Example](https://github.com/niceplugin/crx-example)
 - [ajax-hook library](https://github.com/niceplugin/ajax-hook) (reference for XHR interception)
-
----
-
-## Next Steps (Post-MVP)
-
-### Phase 7: UI Polish & DevTools Integration
-
-- [ ] **Rename to DevProxy** - Update all references from `devProxy` to `DevProxy` (branding consistency)
-- [ ] **Chrome DevTools-style UI** - Make the panel look native to Chrome DevTools:
-  - Match DevTools color scheme (dark theme, #242424 background, etc.)
-  - Use DevTools-style tabs, buttons, and inputs
-  - Match typography and spacing
-- [ ] **Install shadcn/ui** - Use shadcn components for consistent, professional UI:
-  - Buttons, inputs, selects, switches
-  - Dialog/modal for rule editor
-  - Tabs component
-  - Data table for rules and logs
-- [ ] **Extension icons** - Create proper icon set:
-  - 16x16, 32x32, 48x48, 128x128 PNG icons
-  - Consider a proxy/network-themed icon (arrows, network nodes, shield)
-
-### Phase 8: Logging & Observability
-
-- [ ] **Remove console.log statements** - Clean up all debug logging from:
-  - `interceptor.ts`
-  - `content-script.ts`
-  - `service-worker.ts`
-- [ ] **In-panel Activity Log** - Add a dedicated log view in the DevProxy panel:
-  - Timestamp, URL, matched rule, action taken
-  - Filter by rule, status code, time range
-  - Clear log button
-  - Expandable rows for full request details
-  - Color-coded by action type (blocked, delayed, modified)
-- [ ] **Request counter badge** - Show count of intercepted requests in panel header
-
-### Phase 9: UX Improvements
-
-- [ ] **Drag-and-drop rule reordering** - Rules are matched in order, let users prioritize
-- [ ] **Rule search/filter** - Quick filter when you have many rules
-- [ ] **Keyboard shortcuts**:
-  - `Cmd+N` / `Ctrl+N` - New rule
-  - `Cmd+E` / `Ctrl+E` - Toggle extension
-  - `Escape` - Close editor modal
-- [ ] **Rule duplication** - Quick duplicate an existing rule
-- [ ] **Bulk operations** - Select multiple rules to enable/disable/delete
-- [ ] **Rule templates** - Pre-built rules for common scenarios:
-  - "Simulate offline"
-  - "Slow network (3G)"
-  - "API rate limiting (429)"
-  - "Server error (500)"
-
-### Phase 10: Advanced Features
-
-- [ ] **Import/Export rules** - JSON export for sharing configurations
-- [ ] **Rule groups/folders** - Organize rules by project or domain
-- [ ] **Conditional rules** - Only apply rule if header matches, method is POST, etc.
-- [ ] **Request method filtering** - Target only GET, POST, PUT, etc.
-- [ ] **Response body modification** - Override response content (complex, may need different approach)
-- [ ] **Per-domain quick toggle** - Sidebar showing domains with active rules
-
-### Phase 11: Chrome Web Store Release
-
-- [ ] **Store listing assets**:
-  - Promotional images (440x280, 920x680, 1400x560)
-  - Screenshots (1280x800)
-  - Detailed description with features
-- [ ] **Privacy policy** - Required for Web Store
-- [ ] **Landing page** - Simple site explaining the extension
-- [ ] **Analytics** - Optional anonymous usage tracking (with consent)
 
 ---
 
