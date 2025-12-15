@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="60" fill="#1e293b"/>
+
+  <!-- Outer connection nodes -->
+  <circle cx="28" cy="40" r="8" fill="#64748b"/>
+  <circle cx="28" cy="88" r="8" fill="#64748b"/>
+  <circle cx="100" cy="40" r="8" fill="#64748b"/>
+  <circle cx="100" cy="88" r="8" fill="#64748b"/>
+
+  <!-- Connection lines to center -->
+  <line x1="34" y1="44" x2="52" y2="56" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+  <line x1="34" y1="84" x2="52" y2="72" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+  <line x1="94" y1="44" x2="76" y2="56" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+  <line x1="94" y1="84" x2="76" y2="72" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Center proxy node (larger, emphasized) -->
+  <circle cx="64" cy="64" r="18" fill="#475569"/>
+  <circle cx="64" cy="64" r="10" fill="#94a3b8"/>
+</svg>

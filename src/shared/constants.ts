@@ -25,8 +25,16 @@ export const DELAY_PRESETS = [
 
 // Match type options
 export const MATCH_TYPES = [
-  { value: 'contains', label: 'Contains', description: 'URL includes this text' },
+  {
+    value: 'contains',
+    label: 'Contains',
+    description: 'URL includes this text',
+  },
   { value: 'exact', label: 'Exact', description: 'URL exactly matches' },
-  { value: 'wildcard', label: 'Wildcard', description: 'Use * as wildcard (e.g., */api/*)' },
+  {
+    value: 'wildcard',
+    label: 'Wildcard',
+    description: 'Use * as wildcard (e.g., */api/*)',
+  },
   { value: 'regex', label: 'Regex', description: 'Regular expression' },
 ] as const;

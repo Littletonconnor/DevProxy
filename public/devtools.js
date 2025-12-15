@@ -1,10 +1,10 @@
-// Create a DevTools panel named "devProxy"
+// Create a DevTools panel named "DevProxy"
 // This runs when DevTools opens and registers our panel
 chrome.devtools.panels.create(
-  'devProxy',
+  'DevProxy',
   'icons/icon16.png',
   'panel.html',
   (panel) => {
-    console.log('devProxy panel created');
+    console.log('DevProxy panel created');
   }
 );

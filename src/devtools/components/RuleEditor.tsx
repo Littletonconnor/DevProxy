@@ -1,7 +1,31 @@
 import { useState, useEffect } from 'react';
 import type { Rule, HeaderMod } from '@/shared/types';
-import { STATUS_CODE_PRESETS, DELAY_PRESETS, MATCH_TYPES } from '@/shared/constants';
+import {
+  STATUS_CODE_PRESETS,
+  DELAY_PRESETS,
+  MATCH_TYPES,
+} from '@/shared/constants';
 import { HeaderEditor } from './HeaderEditor';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from './ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Switch } from './ui/switch';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
+import { Separator } from './ui/separator';
 
 interface RuleEditorProps {
   rule?: Rule;
@@ -24,7 +48,6 @@ export function RuleEditor({ rule, onSave, onCancel }: RuleEditorProps) {
   const [form, setForm] = useState<Omit<Rule, 'id'> & { id?: string }>(
     rule || defaultRule
   );
-  const [activeTab, setActiveTab] = useState<'basic' | 'headers'>('basic');
 
   useEffect(() => {
     setForm(rule || defaultRule);
@@ -36,211 +59,226 @@ export function RuleEditor({ rule, onSave, onCancel }: RuleEditorProps) {
     onSave(form);
   };
 
-  const updateForm = <K extends keyof typeof form>(key: K, value: typeof form[K]) => {
+  const updateForm = <K extends keyof typeof form>(
+    key: K,
+    value: (typeof form)[K]
+  ) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-zinc-800 rounded-lg w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col"
-      >
-        <div className="p-4 border-b border-zinc-700">
-          <h2 className="text-lg font-semibold">
-            {rule ? 'Edit Rule' : 'New Rule'}
-          </h2>
-        </div>
+    <Dialog open onOpenChange={(open) => !open && onCancel()}>
+      <DialogContent className="max-w-lg max-h-[80vh] flex flex-col p-0 overflow-hidden">
+        <form onSubmit={handleSubmit} className="flex flex-col h-full min-h-0">
+          <DialogHeader className="px-4 py-3 border-b shrink-0">
+            <DialogTitle className="text-sm">
+              {rule ? 'Edit Rule' : 'New Rule'}
+            </DialogTitle>
+          </DialogHeader>
 
-        {/* Tabs */}
-        <div className="flex border-b border-zinc-700">
-          <button
-            type="button"
-            onClick={() => setActiveTab('basic')}
-            className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === 'basic'
-                ? 'text-white border-b-2 border-emerald-500'
-                : 'text-zinc-400 hover:text-white'
-            }`}
-          >
-            Basic
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('headers')}
-            className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === 'headers'
-                ? 'text-white border-b-2 border-emerald-500'
-                : 'text-zinc-400 hover:text-white'
-            }`}
-          >
-            Headers
-          </button>
-        </div>
+          <Tabs defaultValue="basic" className="flex-1 flex flex-col min-h-0">
+            <TabsList className="w-full justify-start rounded-none bg-muted/50 h-auto p-1 gap-1 shrink-0">
+              <TabsTrigger
+                value="basic"
+                className="rounded-sm data-[state=active]:bg-background data-[state=active]:shadow-sm px-4 py-1.5 text-xs"
+              >
+                Basic
+              </TabsTrigger>
+              <TabsTrigger
+                value="headers"
+                className="rounded-sm data-[state=active]:bg-background data-[state=active]:shadow-sm px-4 py-1.5 text-xs"
+              >
+                Headers
+              </TabsTrigger>
+            </TabsList>
 
-        <div className="p-4 overflow-y-auto flex-1 space-y-4">
-          {activeTab === 'basic' && (
-            <>
-              {/* Rule Name */}
-              <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">
-                  Rule Name
-                </label>
-                <input
-                  type="text"
-                  value={form.name}
-                  onChange={(e) => updateForm('name', e.target.value)}
-                  placeholder="e.g., Simulate 500 on /api/users"
-                  className="w-full bg-zinc-700 border border-zinc-600 rounded px-3 py-2 focus:outline-none focus:border-emerald-500"
-                  required
-                />
-              </div>
-
-              {/* URL Pattern */}
-              <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">
-                  URL Pattern
-                </label>
-                <input
-                  type="text"
-                  value={form.urlPattern}
-                  onChange={(e) => updateForm('urlPattern', e.target.value)}
-                  placeholder="e.g., /api/users or https://*/api/*"
-                  className="w-full bg-zinc-700 border border-zinc-600 rounded px-3 py-2 focus:outline-none focus:border-emerald-500"
-                  required
-                />
-              </div>
-
-              {/* Match Type */}
-              <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">
-                  Match Type
-                </label>
-                <select
-                  value={form.matchType}
-                  onChange={(e) => updateForm('matchType', e.target.value as Rule['matchType'])}
-                  className="w-full bg-zinc-700 border border-zinc-600 rounded px-3 py-2 focus:outline-none focus:border-emerald-500"
-                >
-                  {MATCH_TYPES.map((type) => (
-                    <option key={type.value} value={type.value}>
-                      {type.label} - {type.description}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Status Code */}
-              <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">
-                  Response Status Code
-                </label>
-                <select
-                  value={form.statusCode || ''}
-                  onChange={(e) => updateForm('statusCode', e.target.value ? Number(e.target.value) : undefined)}
-                  disabled={form.simulateNetworkError}
-                  className="w-full bg-zinc-700 border border-zinc-600 rounded px-3 py-2 focus:outline-none focus:border-emerald-500 disabled:opacity-50"
-                >
-                  <option value="">No override (use actual response)</option>
-                  {STATUS_CODE_PRESETS.map((preset) => (
-                    <option key={preset.code} value={preset.code}>
-                      {preset.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Network Error Simulation */}
-              <div className="flex items-center gap-3 p-3 bg-zinc-700/50 rounded-lg">
-                <input
-                  type="checkbox"
-                  id="simulateNetworkError"
-                  checked={form.simulateNetworkError || false}
-                  onChange={(e) => {
-                    updateForm('simulateNetworkError', e.target.checked);
-                    if (e.target.checked) {
-                      updateForm('statusCode', undefined);
-                    }
-                  }}
-                  className="w-4 h-4 rounded border-zinc-500 bg-zinc-600 text-emerald-500 focus:ring-emerald-500"
-                />
-                <label htmlFor="simulateNetworkError" className="flex-1">
-                  <span className="block text-sm font-medium text-zinc-200">Simulate Network Error</span>
-                  <span className="block text-xs text-zinc-400">
-                    Rejects fetch with TypeError (like connection refused)
-                  </span>
-                </label>
-              </div>
-
-              {/* Delay */}
-              <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">
-                  Response Delay
-                </label>
-                <div className="flex gap-2">
-                  <select
-                    value={DELAY_PRESETS.find((p) => p.ms === form.delayMs)?.ms ?? 'custom'}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (val === 'custom') return;
-                      updateForm('delayMs', Number(val) || undefined);
-                    }}
-                    className="flex-1 bg-zinc-700 border border-zinc-600 rounded px-3 py-2 focus:outline-none focus:border-emerald-500"
-                  >
-                    {DELAY_PRESETS.map((preset) => (
-                      <option key={preset.ms} value={preset.ms}>
-                        {preset.label}
-                      </option>
-                    ))}
-                    <option value="custom">Custom...</option>
-                  </select>
-                  <input
-                    type="number"
-                    value={form.delayMs || ''}
-                    onChange={(e) => updateForm('delayMs', e.target.value ? Number(e.target.value) : undefined)}
-                    placeholder="ms"
-                    min="0"
-                    max="30000"
-                    className="w-24 bg-zinc-700 border border-zinc-600 rounded px-3 py-2 focus:outline-none focus:border-emerald-500"
+            <div className="flex-1 min-h-0 overflow-y-auto p-4">
+              <TabsContent value="basic" className="mt-0 space-y-4">
+                {/* Rule Name */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="name" className="text-xs">
+                    Rule Name
+                  </Label>
+                  <Input
+                    id="name"
+                    value={form.name}
+                    onChange={(e) => updateForm('name', e.target.value)}
+                    placeholder="e.g., Simulate 500 on /api/users"
+                    required
                   />
                 </div>
-              </div>
-            </>
-          )}
 
-          {activeTab === 'headers' && (
-            <>
-              <HeaderEditor
-                label="Request Headers"
-                headers={form.requestHeaders || []}
-                onChange={(headers: HeaderMod[]) => updateForm('requestHeaders', headers)}
-              />
-              <div className="border-t border-zinc-700 pt-4">
+                {/* URL Pattern */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="urlPattern" className="text-xs">
+                    URL Pattern
+                  </Label>
+                  <Input
+                    id="urlPattern"
+                    value={form.urlPattern}
+                    onChange={(e) => updateForm('urlPattern', e.target.value)}
+                    placeholder="e.g., /api/users or https://*/api/*"
+                    required
+                  />
+                </div>
+
+                {/* Match Type */}
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Match Type</Label>
+                  <Select
+                    value={form.matchType}
+                    onValueChange={(value) =>
+                      updateForm('matchType', value as Rule['matchType'])
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {MATCH_TYPES.map((type) => (
+                        <SelectItem key={type.value} value={type.value}>
+                          {type.label} - {type.description}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Status Code */}
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Response Status Code</Label>
+                  <Select
+                    value={form.statusCode?.toString() || 'none'}
+                    onValueChange={(value) =>
+                      updateForm(
+                        'statusCode',
+                        value === 'none' ? undefined : Number(value)
+                      )
+                    }
+                    disabled={form.simulateNetworkError}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="No override" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">
+                        No override (use actual response)
+                      </SelectItem>
+                      {STATUS_CODE_PRESETS.map((preset) => (
+                        <SelectItem
+                          key={preset.code}
+                          value={preset.code.toString()}
+                        >
+                          {preset.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Network Error Simulation */}
+                <div className="flex items-center justify-between p-3 rounded-md border">
+                  <div className="space-y-0.5">
+                    <Label
+                      htmlFor="simulateNetworkError"
+                      className="text-xs font-medium"
+                    >
+                      Simulate Network Error
+                    </Label>
+                    <p className="text-[10px] text-muted-foreground">
+                      Rejects fetch with TypeError (like connection refused)
+                    </p>
+                  </div>
+                  <Switch
+                    id="simulateNetworkError"
+                    checked={form.simulateNetworkError || false}
+                    onCheckedChange={(checked) => {
+                      updateForm('simulateNetworkError', checked);
+                      if (checked) {
+                        updateForm('statusCode', undefined);
+                      }
+                    }}
+                  />
+                </div>
+
+                {/* Delay */}
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Response Delay</Label>
+                  <div className="flex gap-2">
+                    <Select
+                      value={
+                        DELAY_PRESETS.find(
+                          (p) => p.ms === form.delayMs
+                        )?.ms?.toString() ?? 'custom'
+                      }
+                      onValueChange={(value) => {
+                        if (value === 'custom') return;
+                        updateForm('delayMs', Number(value) || undefined);
+                      }}
+                    >
+                      <SelectTrigger className="flex-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {DELAY_PRESETS.map((preset) => (
+                          <SelectItem
+                            key={preset.ms}
+                            value={preset.ms.toString()}
+                          >
+                            {preset.label}
+                          </SelectItem>
+                        ))}
+                        <SelectItem value="custom">Custom...</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Input
+                      type="number"
+                      value={form.delayMs || ''}
+                      onChange={(e) =>
+                        updateForm(
+                          'delayMs',
+                          e.target.value ? Number(e.target.value) : undefined
+                        )
+                      }
+                      placeholder="ms"
+                      min="0"
+                      max="30000"
+                      className="w-20"
+                    />
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="headers" className="mt-0 space-y-4">
+                <HeaderEditor
+                  label="Request Headers"
+                  headers={form.requestHeaders || []}
+                  onChange={(headers: HeaderMod[]) =>
+                    updateForm('requestHeaders', headers)
+                  }
+                />
+                <Separator />
                 <HeaderEditor
                   label="Response Headers"
                   headers={form.responseHeaders || []}
-                  onChange={(headers: HeaderMod[]) => updateForm('responseHeaders', headers)}
+                  onChange={(headers: HeaderMod[]) =>
+                    updateForm('responseHeaders', headers)
+                  }
                 />
-              </div>
-            </>
-          )}
-        </div>
+              </TabsContent>
+            </div>
+          </Tabs>
 
-        <div className="p-4 border-t border-zinc-700 flex justify-end gap-2">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 text-zinc-400 hover:text-white hover:bg-zinc-700 rounded transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded font-medium transition-colors"
-          >
-            {rule ? 'Save Changes' : 'Create Rule'}
-          </button>
-        </div>
-      </form>
-    </div>
+          <DialogFooter className="px-4 py-3 border-t">
+            <Button type="button" variant="ghost" size="sm" onClick={onCancel}>
+              Cancel
+            </Button>
+            <Button type="submit" size="sm">
+              {rule ? 'Save Changes' : 'Create Rule'}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

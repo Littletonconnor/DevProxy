@@ -1,4 +1,15 @@
 import type { HeaderMod } from '@/shared/types';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
+import { Plus, X } from 'lucide-react';
 
 interface HeaderEditorProps {
   headers: HeaderMod[];
@@ -25,59 +36,74 @@ export function HeaderEditor({ headers, onChange, label }: HeaderEditorProps) {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-zinc-300">{label}</label>
-        <button
+        <Label className="text-xs">{label}</Label>
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
           onClick={addHeader}
-          className="text-xs px-2 py-1 text-emerald-400 hover:text-emerald-300 hover:bg-zinc-700 rounded transition-colors"
+          className="text-xs h-7"
         >
-          + Add Header
-        </button>
+          <Plus className="size-3 mr-1" />
+          Add Header
+        </Button>
       </div>
 
       {headers.length === 0 ? (
-        <p className="text-xs text-zinc-500 italic">No headers configured</p>
+        <p className="text-xs text-muted-foreground italic">
+          No headers configured
+        </p>
       ) : (
         <div className="space-y-2">
           {headers.map((header, index) => (
             <div key={index} className="flex items-center gap-2">
-              <select
+              <Select
                 value={header.operation}
-                onChange={(e) => updateHeader(index, { operation: e.target.value as HeaderMod['operation'] })}
-                className="bg-zinc-700 border border-zinc-600 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-emerald-500"
+                onValueChange={(value) =>
+                  updateHeader(index, {
+                    operation: value as HeaderMod['operation'],
+                  })
+                }
               >
-                <option value="add">Add</option>
-                <option value="modify">Modify</option>
-                <option value="remove">Remove</option>
-              </select>
+                <SelectTrigger className="w-24 h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="add">Add</SelectItem>
+                  <SelectItem value="modify">Modify</SelectItem>
+                  <SelectItem value="remove">Remove</SelectItem>
+                </SelectContent>
+              </Select>
 
-              <input
+              <Input
                 type="text"
                 value={header.name}
                 onChange={(e) => updateHeader(index, { name: e.target.value })}
                 placeholder="Header name"
-                className="flex-1 bg-zinc-700 border border-zinc-600 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-emerald-500"
+                className="flex-1 h-8 text-xs"
               />
 
               {header.operation !== 'remove' && (
-                <input
+                <Input
                   type="text"
                   value={header.value || ''}
-                  onChange={(e) => updateHeader(index, { value: e.target.value })}
+                  onChange={(e) =>
+                    updateHeader(index, { value: e.target.value })
+                  }
                   placeholder="Value"
-                  className="flex-1 bg-zinc-700 border border-zinc-600 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-emerald-500"
+                  className="flex-1 h-8 text-xs"
                 />
               )}
 
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon-sm"
                 onClick={() => removeHeader(index)}
-                className="p-1.5 text-zinc-400 hover:text-red-400 hover:bg-zinc-600 rounded transition-colors"
+                className="hover:text-destructive"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+                <X className="size-3.5" />
+              </Button>
             </div>
           ))}
         </div>
