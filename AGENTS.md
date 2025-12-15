@@ -1,4 +1,4 @@
-# devProxy - Chrome Extension Context Document
+# DevProxy - Chrome Extension Context Document
 
 > **For AI Assistants**: This document is designed for collaborative development. Your role is to guide, explain, and teach—not to generate complete solutions. Ask clarifying questions, explain trade-offs, and help the developer understand _why_ before showing _how_. Break down complex tasks into digestible steps.
 
@@ -6,7 +6,7 @@
 
 ## Project Overview
 
-**devProxy** is an open-source Chrome DevTools extension for simulating network conditions during web development. It allows developers to test how their applications handle various HTTP scenarios without modifying backend code.
+**DevProxy** is an open-source Chrome DevTools extension for simulating network conditions during web development. It allows developers to test how their applications handle various HTTP scenarios without modifying backend code.
 
 - **License**: MIT
 - **Target**: Chrome Web Store (public release)
@@ -283,60 +283,34 @@ type Message =
 
 ### Phase 6: UI Polish & DevTools Integration
 
-- [ ] **Rename to DevProxy** - Update all references from `devProxy` to `DevProxy` (branding consistency)
-- [ ] **Chrome DevTools-style UI** - Make the panel look native to Chrome DevTools:
-  - Match DevTools color scheme (dark theme, #242424 background, etc.)
-  - Use DevTools-style tabs, buttons, and inputs
-  - Match typography and spacing
-- [ ] **Install shadcn/ui** - Use shadcn components for consistent, professional UI:
+- [x] **Rename to DevProxy** - Update all references from `devProxy` to `DevProxy` (branding consistency)
+- [x] **Install shadcn/ui** - Use shadcn components for consistent, professional UI:
   - Buttons, inputs, selects, switches
   - Dialog/modal for rule editor
   - Tabs component
   - Data table for rules and logs
-- [ ] **Extension icons** - Create proper icon set:
+- [x] **Chrome DevTools-style UI** - Make the panel look native to Chrome DevTools:
+  - Uses system color scheme preference (auto light/dark)
+  - shadcn components with Tailwind theme variables
+  - Clean, compact typography matching DevTools style
+- [x] **Extension icons** - Create proper icon set:
   - 16x16, 32x32, 48x48, 128x128 PNG icons
-  - Consider a proxy/network-themed icon (arrows, network nodes, shield)
+  - Network-themed design: bidirectional arrows with central proxy node
 
 ### Phase 7: Logging & Observability
 
-- [ ] **Remove console.log statements** - Clean up all debug logging from:
+- [x] **Remove console.log statements** - Clean up all debug logging from:
   - `interceptor.ts`
   - `content-script.ts`
   - `service-worker.ts`
-- [ ] **In-panel Activity Log** - Add a dedicated log view in the DevProxy panel:
+- [x] **In-panel Activity Log** - Add a dedicated log view in the DevProxy panel:
   - Timestamp, URL, matched rule, action taken
-  - Filter by rule, status code, time range
+  - Filter by URL/rule and action type
   - Clear log button
-  - Expandable rows for full request details
-  - Color-coded by action type (blocked, delayed, modified)
-- [ ] **Request counter badge** - Show count of intercepted requests in panel header
+  - Color-coded by action type (delayed, status changed, headers modified, network error)
+- [x] **Request counter badge** - Show count of intercepted requests in panel header and Activity tab
 
-### Phase 8: UX Improvements
-
-- [ ] **Drag-and-drop rule reordering** - Rules are matched in order, let users prioritize
-- [ ] **Rule search/filter** - Quick filter when you have many rules
-- [ ] **Keyboard shortcuts**:
-  - `Cmd+N` / `Ctrl+N` - New rule
-  - `Cmd+E` / `Ctrl+E` - Toggle extension
-  - `Escape` - Close editor modal
-- [ ] **Rule duplication** - Quick duplicate an existing rule
-- [ ] **Bulk operations** - Select multiple rules to enable/disable/delete
-- [ ] **Rule templates** - Pre-built rules for common scenarios:
-  - "Simulate offline"
-  - "Slow network (3G)"
-  - "API rate limiting (429)"
-  - "Server error (500)"
-
-### Phase 9: Advanced Features
-
-- [ ] **Import/Export rules** - JSON export for sharing configurations
-- [ ] **Rule groups/folders** - Organize rules by project or domain
-- [ ] **Conditional rules** - Only apply rule if header matches, method is POST, etc.
-- [ ] **Request method filtering** - Target only GET, POST, PUT, etc.
-- [ ] **Response body modification** - Override response content (complex, may need different approach)
-- [ ] **Per-domain quick toggle** - Sidebar showing domains with active rules
-
-### Phase 10: Polish & Chrome Web Store Release
+### Phase 8: Polish & Chrome Web Store Release
 
 - [ ] **Error handling** - Graceful failures throughout
 - [ ] **Edge cases** - iframes, web workers, service workers

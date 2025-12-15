@@ -24,7 +24,10 @@ export default defineConfig({
         // DevTools entry (creates the panel)
         devtools: resolve(__dirname, 'public/devtools.html'),
         // Background service worker
-        'service-worker': resolve(__dirname, 'src/background/service-worker.ts'),
+        'service-worker': resolve(
+          __dirname,
+          'src/background/service-worker.ts'
+        ),
         // Content script
         'content-script': resolve(__dirname, 'src/content/content-script.ts'),
         // Injected interceptor (runs in page context)

@@ -15,15 +15,15 @@ function inlinePanelCSS() {
 
   let html = readFileSync(panelPath, 'utf-8');
 
-  // Find CSS link tag and extract the href
-  const linkMatch = html.match(/<link[^>]*rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/);
+  const linkMatch = html.match(
+    /<link[^>]*rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/
+  );
   if (!linkMatch) {
     console.log('No CSS link found in panel.html');
     return;
   }
 
   const cssHref = linkMatch[1];
-  // Resolve CSS path relative to panel.html location
   const cssPath = join(distDir, cssHref.replace(/^\.\//, ''));
 
   if (!existsSync(cssPath)) {
@@ -33,17 +33,12 @@ function inlinePanelCSS() {
 
   const cssContent = readFileSync(cssPath, 'utf-8');
 
-  // Replace the link tag with an inline style tag
-  html = html.replace(
-    linkMatch[0],
-    `<style>${cssContent}</style>`
-  );
+  html = html.replace(linkMatch[0], `<style>${cssContent}</style>`);
 
   writeFileSync(panelPath, html);
   console.log(`Inlined CSS into panel.html (${cssContent.length} bytes)`);
 }
 
-// Remove crossorigin attributes from HTML files
 function fixHtmlFiles(dir) {
   const files = readdirSync(dir, { withFileTypes: true });
 
@@ -56,7 +51,6 @@ function fixHtmlFiles(dir) {
       let content = readFileSync(fullPath, 'utf-8');
       const original = content;
 
-      // Remove crossorigin attribute
       content = content.replace(/ crossorigin/g, '');
 
       if (content !== original) {
@@ -67,7 +61,6 @@ function fixHtmlFiles(dir) {
   }
 }
 
-// Run post-build fixes
 fixHtmlFiles(distDir);
 inlinePanelCSS();
 console.log('Post-build fixes complete');
